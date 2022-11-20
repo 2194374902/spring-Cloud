@@ -1,5 +1,6 @@
 package cn.bdqn.controller;
 
+import cn.bdqn.Feign.UserOrederFeign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -13,20 +14,27 @@ import java.util.List;
 public class controller {
     @Autowired
     private DiscoveryClient discoveryClient; //服务发现
+    @Autowired
+    UserOrederFeign userOrederFeign;
 
 
     @GetMapping("text")
-    @ResponseBody
     public String text(String name){
         List<ServiceInstance> instances = discoveryClient.getInstances(name);
         ServiceInstance serviceInstance=instances.get(0);
         String host = serviceInstance.getHost();
         int port = serviceInstance.getPort();
         System.out.println(host+port);
-
-
         return instances.get(0).toString();
     }
+    @GetMapping("user")
+    public List<String> user(){
+        System.out.println("调用order");
+        List<String> order = userOrederFeign.order();
+        return order;
+    }
+
+
 
 
 
